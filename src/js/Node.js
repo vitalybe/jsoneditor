@@ -1302,7 +1302,7 @@ Node.prototype._updateDomValue = function () {
 
         //Create the default empty option
         this.dom.select.option = document.createElement('option');
-        this.dom.select.option.value = '';
+        this.dom.select.option.value = 'null';
         this.dom.select.option.innerHTML = '--';
         this.dom.select.appendChild(this.dom.select.option);
 
