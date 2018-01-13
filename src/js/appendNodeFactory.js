@@ -46,7 +46,7 @@ function appendNodeFactory(Node) {
 
     if (this.editor.options.mode === 'tree') {
       // a cell for the dragarea column
-      dom.tdDrag = document.createElement('td');
+      //dom.tdDrag = document.createElement('td');
 
       // create context menu
       var tdMenu = document.createElement('td');
@@ -133,18 +133,7 @@ function appendNodeFactory(Node) {
    */
   AppendNode.prototype.showContextMenu = function (anchor, onClose) {
     var node = this;
-    var items = [
-      // create append button
-      {
-        'text': 'Append',
-        'title': 'Append a new field with type \'auto\' (Ctrl+Shift+Ins)',
-        'submenuTitle': 'Select the type of the field to be appended',
-        'className': 'jsoneditor-insert',
-        'click': function () {
-          node._onAppend('', '', 'auto');
-        },
-      }
-    ];
+    var items = this.getContextMenuItems(node, false);
 
     var menu = new ContextMenu(items, {close: onClose});
     menu.show(anchor, this.editor.content);

@@ -1270,9 +1270,9 @@ treemode._createTable = function () {
   var col;
   this.colgroupContent = document.createElement('colgroup');
   if (this.options.mode === 'tree') {
-    col = document.createElement('col');
-    col.width = "24px";
-    this.colgroupContent.appendChild(col);
+    // col = document.createElement('col');
+    // col.width = "24px";
+    // this.colgroupContent.appendChild(col);
   }
   col = document.createElement('col');
   col.width = "24px";

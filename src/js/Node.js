@@ -1450,28 +1450,28 @@ Node.prototype.getDom = function() {
 
   if (this.editor.options.mode === "tree") {
     // note: we take here the global setting
-    var tdDrag = document.createElement("td");
-    if (false) {
-      // create draggable area
-      if (this.parent) {
-        var domDrag = document.createElement("button");
-        domDrag.type = "button";
-        dom.drag = domDrag;
-        domDrag.className = "jsoneditor-dragarea";
-        domDrag.title = "Drag to move this field (Alt+Shift+Arrows)";
-        tdDrag.appendChild(domDrag);
-      }
-    }
-    dom.tr.appendChild(tdDrag);
+    // var tdDrag = document.createElement("td");
+    // if (false) {
+    //   // create draggable area
+    //   if (this.parent) {
+    //     var domDrag = document.createElement("button");
+    //     domDrag.type = "button";
+    //     dom.drag = domDrag;
+    //     domDrag.className = "jsoneditor-dragarea";
+    //     domDrag.title = "Drag to move this field (Alt+Shift+Arrows)";
+    //     tdDrag.appendChild(domDrag);
+    //   }
+    // }
+    // dom.tr.appendChild(tdDrag);
 
     // create context menu
-    var tdMenu = document.createElement('td');
-    if(this.parent && this.parent.type === "array") {
-      var menu = document.createElement('button');
-      menu.type = 'button';
+    var tdMenu = document.createElement("td");
+    if (this.parent && this.parent.type === "array") {
+      var menu = document.createElement("button");
+      menu.type = "button";
       dom.menu = menu;
-      menu.className = 'jsoneditor-contextmenu';
-      menu.title = 'Click to open the actions menu (Ctrl+M)';
+      menu.className = "jsoneditor-contextmenu";
+      menu.title = "Click to open the actions menu (Ctrl+M)";
       tdMenu.appendChild(dom.menu);
     }
     dom.tr.appendChild(tdMenu);
@@ -2377,6 +2377,7 @@ Node.prototype.onKeyDown = function(event) {
 
   // console.log(ctrlKey, keynum, event.charCode); // TODO: cleanup
   if (keynum == 13) {
+    debugger
     // Enter
     if (target == this.dom.value) {
       if (!this.editable.value || event.ctrlKey) {
@@ -3175,47 +3176,20 @@ Node.prototype.addTemplates = function(menu, append) {
   });
 };
 
-/**
- * Show a contextmenu for this node
- * @param {HTMLElement} anchor   Anchor element to attach the context menu to
- *                               as sibling.
- * @param {function} [onClose]   Callback method called when the context menu
- *                               is being closed.
- */
-Node.prototype.showContextMenu = function(anchor, onClose) {
-  var node = this;
-  var titles = Node.TYPE_TITLES;
+Node.prototype.getContextMenuItems = function(node, includeRemove) {
   var items = [];
+  items.push({
+    text: "Append",
+    title: "Append a new field with type 'auto' after this field (Ctrl+Shift+Ins)",
+    submenuTitle: "Select the type of the field to be appended",
+    className: "jsoneditor-append",
+    click: function() {
+      node._onAppend("", "", "auto");
+    },
+  });
 
-  if (this.parent && this.parent._hasChilds()) {
-    if (items.length) {
-      // create a separator
-      items.push({
-        type: "separator",
-      });
-    }
-
-    items.push({
-      text: "Append",
-      title: "Append a new field with type 'auto' after this field (Ctrl+Shift+Ins)",
-      submenuTitle: "Select the type of the field to be appended",
-      className: "jsoneditor-append",
-      click: function() {
-        node._onAppend("", "", "auto");
-      },
-    });
-
-    if (this.editable.field) {
-      // create duplicate button
-      items.push({
-        text: "Duplicate",
-        title: "Duplicate this field (Ctrl+D)",
-        className: "jsoneditor-duplicate",
-        click: function() {
-          Node.onDuplicate(node);
-        },
-      });
-
+  if (this.editable.field) {
+    if (includeRemove) {
       // create remove button
       items.push({
         text: "Remove",
@@ -3228,7 +3202,22 @@ Node.prototype.showContextMenu = function(anchor, onClose) {
     }
   }
 
-  var menu = new ContextMenu(items, { close: onClose });
+  return items;
+};
+
+/**
+ * Show a contextmenu for this node
+ * @param {HTMLElement} anchor   Anchor element to attach the context menu to
+ *                               as sibling.
+ * @param {function} [onClose]   Callback method called when the context menu
+ *                               is being closed.
+ */
+Node.prototype.showContextMenu = function(anchor, onClose) {
+  var node = this;
+  var titles = Node.TYPE_TITLES;
+  var items = [];
+
+  var menu = new ContextMenu(this.getContextMenuItems(node, true), { close: onClose });
   menu.show(anchor, this.editor.content);
 };
 
