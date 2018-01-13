@@ -133,42 +133,6 @@ function appendNodeFactory(Node) {
    */
   AppendNode.prototype.showContextMenu = function (anchor, onClose) {
     var node = this;
-    var titles = Node.TYPE_TITLES;
-    var appendSubmenu = [
-        {
-            text: 'Auto',
-            className: 'jsoneditor-type-auto',
-            title: titles.auto,
-            click: function () {
-                node._onAppend('', '', 'auto');
-            }
-        },
-        {
-            text: 'Array',
-            className: 'jsoneditor-type-array',
-            title: titles.array,
-            click: function () {
-                node._onAppend('', []);
-            }
-        },
-        {
-            text: 'Object',
-            className: 'jsoneditor-type-object',
-            title: titles.object,
-            click: function () {
-                node._onAppend('', {});
-            }
-        },
-        {
-            text: 'String',
-            className: 'jsoneditor-type-string',
-            title: titles.string,
-            click: function () {
-                node._onAppend('', '', 'string');
-            }
-        }
-    ];
-    node.addTemplates(appendSubmenu, true);
     var items = [
       // create append button
       {
@@ -179,7 +143,6 @@ function appendNodeFactory(Node) {
         'click': function () {
           node._onAppend('', '', 'auto');
         },
-        'submenu': appendSubmenu
       }
     ];
 
