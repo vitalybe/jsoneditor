@@ -1500,7 +1500,7 @@ Node.prototype.getDom = function() {
 
   if (this.editor.options.mode === 'tree') { // note: we take here the global setting
     var tdDrag = document.createElement('td');
-    if (this.editable.field) {
+    if (false) {
       // create draggable area
       if (this.parent) {
         var domDrag = document.createElement('button');
