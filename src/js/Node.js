@@ -2377,7 +2377,6 @@ Node.prototype.onKeyDown = function(event) {
 
   // console.log(ctrlKey, keynum, event.charCode); // TODO: cleanup
   if (keynum == 13) {
-    debugger
     // Enter
     if (target == this.dom.value) {
       if (!this.editable.value || event.ctrlKey) {
@@ -2385,6 +2384,9 @@ Node.prototype.onKeyDown = function(event) {
           window.open(this.value, "_blank");
           handled = true;
         }
+      } else {
+        event.preventDefault();
+        target.blur();
       }
     } else if (target == this.dom.expand) {
       var expandable = this._hasChilds();
