@@ -1950,7 +1950,7 @@ Node.prototype._updateSchema = function() {
     // find the part of the json schema matching this nodes path
     this.schema = this.editor.options.schema ? Node._findSchema(this.editor.options.schema, this.getPath()) : null;
     if (this.schema) {
-      this.enum = Node._findEnum(this.schema);
+      this.enum = Node._findEnum(this, this.schema);
     } else {
       delete this.enum;
     }
@@ -1964,7 +1964,7 @@ Node.prototype._updateSchema = function() {
  * @return {Array | null} Returns the enum when found, null otherwise.
  * @private
  */
-Node._findEnum = function(schema) {
+Node._findEnum = function(node, schema) {
   if (schema.enum) {
     return schema.enum;
   }
@@ -1976,6 +1976,14 @@ Node._findEnum = function(schema) {
     });
     if (match.length > 0) {
       return match[0].enum;
+    }
+  }
+
+  // if this is an object in an array
+  if (node.parent && "index" in node.parent) {
+    var itemSchema = schema && schema.items && schema.items.properties[node.field];
+    if (itemSchema) {
+      return itemSchema.enum;
     }
   }
 
