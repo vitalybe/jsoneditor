@@ -3195,22 +3195,19 @@ Node.prototype.getContextMenuItems = function(node, includeRemove) {
     className: "jsoneditor-append",
     click: function() {
       var schema = node.parent && node.parent.schema;
-      if (!schema || schema.type !== "array") {
-        return;
-      }
+      var itemsSchema = schema && schema.items;
 
-      var itemsSchema = schema.items;
-      if (itemsSchema && itemsSchema.type === "object" && itemsSchema.properties) {
-        var data = {};
-        Object.keys(itemsSchema.properties).forEach(key => {
-          data[key] = null;
-        });
+      if (schema && schema.type === "array" && itemsSchema && itemsSchema.type === "object" && itemsSchema.properties) {
+          var data = {};
+          Object.keys(itemsSchema.properties).forEach(key => {
+            data[key] = null;
+          });
 
-        node._onAppend("", data, "object");
-      } else {
-        node._onAppend("", "", "auto");
-      }
-    },
+          node._onAppend("", data, "object");
+        } else {
+          node._onAppend("", "", "auto");
+        }
+    }
   });
 
   if (this.editable.field) {
