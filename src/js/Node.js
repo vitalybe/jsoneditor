@@ -3186,7 +3186,22 @@ Node.prototype.getContextMenuItems = function(node, includeRemove) {
     submenuTitle: "Select the type of the field to be appended",
     className: "jsoneditor-append",
     click: function() {
-      node._onAppend("", "", "auto");
+      var schema = node.parent && node.parent.schema;
+      if (!schema || schema.type !== "array") {
+        return;
+      }
+
+      var itemsSchema = schema.items;
+      if (itemsSchema && itemsSchema.type === "object" && itemsSchema.properties) {
+        var data = {};
+        Object.keys(itemsSchema.properties).forEach(key => {
+          data[key] = null;
+        });
+
+        node._onAppend("", data, "object");
+      } else {
+        node._onAppend("", "", "auto");
+      }
     },
   });
 
