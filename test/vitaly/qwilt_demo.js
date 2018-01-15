@@ -61,7 +61,7 @@ var json = {
 
     serverResponseEchoRules: [], // unique object, custom insert
   },
-  origin: {
+  origins: {
     hosts: [],
     algorithm: "RR",
     config: [],
@@ -86,26 +86,31 @@ const mappings = [
     from: "subitem[0].operation.subitemManipulation.minStepSizeForChunking",
     to: "subitem.minStepSizeForChunking",
     default: 1,
+    schema: { type: "integer", minimum: 1 },
   },
   {
     from: "subitem[0].operation.subitemManipulation.maxSegmentSecViewTime",
     to: "subitem.maxSegmentSecViewTime",
     default: 7,
+    schema: { oneOf: [{ type: "integer", minimum: 1 }, { type: "null" }] },
   },
   {
     from: "subitem[0].operation.subitemManipulation.requiredChunkSecViewTime",
     to: "subitem.requiredChunkSecViewTime",
     default: 3600,
+    schema: { type: "integer", minimum: 1 },
   },
   {
     from: "subitem[0].elements[0].priority",
     to: "subitem.priority",
     default: 1,
+    schema: { type: "integer", minimum: 1 },
   },
   {
     from: "subitem[0].elements[0].match",
     to: "subitem.match",
     default: "kMatchOnlyOne",
+    schema: { type: "string", enum: ["kMatchAll", "kMatchOnlyOne"] },
   },
   {
     from: "subitem[0].elements[0].tokens",
@@ -113,80 +118,209 @@ const mappings = [
     default: 1,
     transformFullToPartialFunc: tokenTransformFullToPartialFunc,
     transformPartialToFullFunc: tokenTransformPartialToFullFunc,
+    schema: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          pathSegment: {
+            type: "object",
+            properties: {
+              prefix: { type: ["string", "null"] },
+              suffix: { type: ["string", "null"] },
+            },
+          },
+          extractionRule: {
+            type: "object",
+            properties: {
+              startExtractDelimiter: { type: "string" },
+              startExtractDelimiterIndex: { type: "integer", minimum: 0 },
+              endExtractDelimiter: { type: "string" },
+              endExtractDelimiterIndex: { type: "integer", minimum: 0 },
+            },
+          },
+        },
+      },
+    },
   },
   // Cache
   {
-    from: "cache.cacheControlKnobs.useSMaxAge",
-    to: "cache.useSMaxAge",
+    from: "serverResponseEchoRules",
+    to: "cache.serverResponseEchoRules",
+    default: [],
+    schema: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+
+        properties: {
+          name: { type: "string" },
+          type: { type: "string", enum: ["kStoreAndServe", "kDontStoreDontServe"] },
+        },
+      },
+    },
+  },
+  {
+    from: "shouldStoreOrigServerResponseHeadersInMeta",
+    to: "cache.shouldStoreOrigServerResponseHeadersInMeta",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
   },
   {
-    from: "cache.serverResponseEchoRules",
-    to: "cache.serverResponseEchoRules",
-    default: [],
+    from: "shouldServeOrigServerResponseHeadersFromMetaToLocal ",
+    to: "cache.shouldServeOrigServerResponseHeadersFromMetaToLocal ",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
   },
   {
-    from: "origin.hosts",
-    to: "origin.hosts",
+    from: "shouldStoreLastModifiedPerSubietm",
+    to: "cache.shouldStoreLastModifiedPerSubietm",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "shouldStoreEtagPerSubietm",
+    to: "cache.shouldStoreEtagPerSubietm",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "deleteContentOn404",
+    to: "cache.deleteContentOn404",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useSMaxAge",
+    to: "cache.useSMaxAge",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useMaxAge",
+    to: "cache.cacheControlKnobs.useMaxAge",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useNoStore",
+    to: "cache.cacheControlKnobs.useNoStore",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useNoCache",
+    to: "cache.cacheControlKnobs.useNoCache",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useNoTransform",
+    to: "cache.cacheControlKnobs.useNoTransform",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useProxyRevalidate",
+    to: "cache.cacheControlKnobs.useProxyRevalidate",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.usePrivate",
+    to: "cache.cacheControlKnobs.usePrivate",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useMustRevalidate",
+    to: "cache.cacheControlKnobs.useMustRevalidate",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.usePublic",
+    to: "cache.cacheControlKnobs.usePublic",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.useExpires",
+    to: "cache.cacheControlKnobs.useExpires",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.invalidateByLastModified",
+    to: "cache.cacheControlKnobs.invalidateByLastModified",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.invalidateByEtag",
+    to: "cache.cacheControlKnobs.invalidateByEtag",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.fallbackMinExpirySec",
+    to: "cache.cacheControlKnobs.fallbackMinExpirySec",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.maxStaleSec",
+    to: "cache.cacheControlKnobs.maxStaleSec",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.minExpirySec",
+    to: "cache.cacheControlKnobs.minExpirySec",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  {
+    from: "cacheControlKnobs.minFreshSec",
+    to: "cache.cacheControlKnobs.minFreshSec",
+    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    default: null,
+  },
+  // Multi origin
+  {
+    from: "origins.hosts",
+    to: "origins.hosts",
     default: [],
+    schema: {
+      type: "array",
+      items: {
+        type: "string",
+        pattern: "^\\S+\\.\\S+",
+      },
+    },
+  },
+  {
+    from: "origins.algorithm",
+    to: "origins.algorithm",
+    default: "RR",
+    schema: {
+      type: "string",
+      enum: ["RR", "WRR", "HASH"],
+    },
+  },
+  {
+    from: "origins.config",
+    to: "origins.config",
+    default: [],
+    schema: {
+      type: "array",
+      items: {
+        type: "integer",
+      },
+    },
   },
 ];
-
-const schema = {
-  title: "Validation schema",
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    subitem: {
-      type: "object",
-      properties: {
-        minStepSizeForChunking: { type: "integer", minimum: 1 },
-        maxSegmentSecViewTime: { oneOf: [{ type: "integer", minimum: 1 }, { type: "null" }] },
-        requiredChunkSecViewTime: { type: "integer", minimum: 1 },
-        priority: { type: "integer", minimum: 1 },
-        match: { type: "string", enum: ["kMatchAll", "kMatchOnlyOne"] },
-        tokens: { type: "array" },
-      },
-    },
-    cache: {
-      type: "object",
-      properties: {
-        useSMaxAge: {
-          oneOf: [
-            {
-              type: "string",
-              enum: ["yes", "no"],
-            },
-            { type: "null" },
-          ],
-        },
-        serverResponseEchoRules: {
-          type: "array",
-          items: {
-            type: "object",
-            additionalProperties: false,
-
-            properties: {
-              name: { type: "string" },
-              type: { type: "string", enum: ["kStoreAndServe", "kDontStoreDontServe"] },
-            },
-          },
-        },
-      },
-    },
-    origin: {
-      type: "object",
-      properties: {
-        hosts: {
-          type: "array",
-          items: {
-            type: "number",
-          },
-        },
-      },
-    },
-  },
-};
 
 function showFullMode() {
   if (editor.get()) {
@@ -222,6 +356,45 @@ function showPartialMode() {
   editor.setSchema(schema);
 }
 
+function createSchemaFromMappings(mappings) {
+  const schema = {
+    title: "Validation schema",
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      subitem: {
+        type: "object",
+        properties: {},
+      },
+      cache: {
+        type: "object",
+        properties: {},
+      },
+      origins: {
+        type: "object",
+        properties: {},
+      },
+    },
+  };
+
+  mappings.forEach(mapping => {
+    var [section, ...parts] = mapping.to.split(".");
+    if (!(section in schema.properties)) {
+      throw new Error("invalid section: " + section);
+    }
+
+    var currentProperties = schema.properties[section];
+    for (var i = 0; i < parts.length - 1; i++) {
+      currentProperties["properties"][parts[i]] = { type: "object", properties: {} };
+      currentProperties = currentProperties["properties"][parts[i]];
+    }
+
+    currentProperties.properties[parts[parts.length - 1]] = mapping.schema;
+  });
+
+  return schema;
+}
+
 document.getElementById("fullMode").onclick = function() {
   showFullMode();
 };
@@ -229,7 +402,8 @@ document.getElementById("partialMode").onclick = function() {
   showPartialMode();
 };
 
+var schema = createSchemaFromMappings(mappings);
 var editor = new JSONEditor(container);
 editor.setMode("code");
 editor.set(json);
-showPartialMode()
+showPartialMode();
