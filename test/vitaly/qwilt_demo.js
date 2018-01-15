@@ -80,6 +80,10 @@ function tokenTransformPartialToFullFunc(currentTokens, newTokens) {
   }
 }
 
+function isNull(value) {
+  return value === null;
+}
+
 const mappings = [
   // Subitem
   {
@@ -92,6 +96,7 @@ const mappings = [
     from: "subitem[0].operation.subitemManipulation.maxSegmentSecViewTime",
     to: "subitem.maxSegmentSecViewTime",
     default: 7,
+    discardIf: isNull,
     schema: { oneOf: [{ type: "integer", minimum: 1 }, { type: "null" }] },
   },
   {
@@ -166,126 +171,147 @@ const mappings = [
     to: "cache.shouldStoreOrigServerResponseHeadersInMeta",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "shouldServeOrigServerResponseHeadersFromMetaToLocal ",
     to: "cache.shouldServeOrigServerResponseHeadersFromMetaToLocal ",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "shouldStoreLastModifiedPerSubietm",
     to: "cache.shouldStoreLastModifiedPerSubietm",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "shouldStoreEtagPerSubietm",
     to: "cache.shouldStoreEtagPerSubietm",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "deleteContentOn404",
     to: "cache.deleteContentOn404",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useSMaxAge",
     to: "cache.useSMaxAge",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useMaxAge",
     to: "cache.cacheControlKnobs.useMaxAge",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useNoStore",
     to: "cache.cacheControlKnobs.useNoStore",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useNoCache",
     to: "cache.cacheControlKnobs.useNoCache",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useNoTransform",
     to: "cache.cacheControlKnobs.useNoTransform",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useProxyRevalidate",
     to: "cache.cacheControlKnobs.useProxyRevalidate",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.usePrivate",
     to: "cache.cacheControlKnobs.usePrivate",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useMustRevalidate",
     to: "cache.cacheControlKnobs.useMustRevalidate",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.usePublic",
     to: "cache.cacheControlKnobs.usePublic",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.useExpires",
     to: "cache.cacheControlKnobs.useExpires",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.invalidateByLastModified",
     to: "cache.cacheControlKnobs.invalidateByLastModified",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.invalidateByEtag",
     to: "cache.cacheControlKnobs.invalidateByEtag",
     schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.fallbackMinExpirySec",
     to: "cache.cacheControlKnobs.fallbackMinExpirySec",
-    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    schema: { oneOf: [{ type: "integer" }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.maxStaleSec",
     to: "cache.cacheControlKnobs.maxStaleSec",
-    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    schema: { oneOf: [{ type: "integer" }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.minExpirySec",
     to: "cache.cacheControlKnobs.minExpirySec",
-    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    schema: { oneOf: [{ type: "integer" }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   {
     from: "cacheControlKnobs.minFreshSec",
     to: "cache.cacheControlKnobs.minFreshSec",
-    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    schema: { oneOf: [{ type: "integer" }, { type: "null" }] },
     default: null,
+    discardIf: isNull,
   },
   // Multi origin
   {
@@ -334,7 +360,11 @@ function showFullMode() {
         transformedValue = mapping.transformPartialToFullFunc(currentValue, newValue);
       }
 
-      _.set(json, mapping.from, transformedValue);
+      if(mapping.discardIf && mapping.discardIf(transformedValue)) {
+        _.unset(json, mapping.from);
+      } else {
+        _.set(json, mapping.from, transformedValue);
+      }
     });
   }
 
@@ -403,7 +433,7 @@ document.getElementById("partialMode").onclick = function() {
 };
 
 var schema = createSchemaFromMappings(mappings);
-var editor = new JSONEditor(container);
+var editor = new JSONEditor(container, {history: false});
 editor.setMode("code");
 editor.set(json);
 showPartialMode();
