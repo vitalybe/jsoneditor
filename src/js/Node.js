@@ -1874,7 +1874,7 @@ Node.prototype.updateDom = function(options) {
   // apply field to DOM
   var domField = this.dom.field;
   if (domField) {
-    if (this.fieldEditable) {
+    if (false) {
       // parent is an object
       domField.contentEditable = this.editable.field;
       domField.spellcheck = false;
