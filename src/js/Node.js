@@ -3189,7 +3189,7 @@ Node.prototype.addTemplates = function(menu, append) {
 Node.prototype._createEmptyObjectFromSchema = function(schemaObject) {
   var result = {};
   if (schemaObject.properties) {
-    Object.keys(schemaObject.properties).forEach(key => {
+    Object.keys(schemaObject.properties).forEach(function(key) {
       var property = schemaObject.properties[key];
       if (property && property.type && property.type === "object") {
         result[key] = this._createEmptyObjectFromSchema(schemaObject.properties[key]);
