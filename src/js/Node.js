@@ -3186,6 +3186,21 @@ Node.prototype.addTemplates = function(menu, append) {
   });
 };
 
+Node.prototype._createEmptyObjectFromSchema = function(schemaObject) {
+  var result = {};
+  if (schemaObject.properties) {
+    Object.keys(schemaObject.properties).forEach(key => {
+      var property = schemaObject.properties[key];
+      if (property && property.type && property.type === "object") {
+        result[key] = this._createEmptyObjectFromSchema(schemaObject.properties[key]);
+      } else {
+        result[key] = null;
+      }
+    });
+  }
+  return result;
+};
+
 Node.prototype.getContextMenuItems = function(node, includeRemove) {
   var items = [];
   items.push({
@@ -3198,16 +3213,13 @@ Node.prototype.getContextMenuItems = function(node, includeRemove) {
       var itemsSchema = schema && schema.items;
 
       if (schema && schema.type === "array" && itemsSchema && itemsSchema.type === "object" && itemsSchema.properties) {
-          var data = {};
-          Object.keys(itemsSchema.properties).forEach(key => {
-            data[key] = null;
-          });
+        var data = node._createEmptyObjectFromSchema(itemsSchema)
 
-          node._onAppend("", data, "object");
-        } else {
-          node._onAppend("", "", "auto");
-        }
-    }
+        node._onAppend("", data, "object");
+      } else {
+        node._onAppend("", "", "auto");
+      }
+    },
   });
 
   if (this.editable.field) {
