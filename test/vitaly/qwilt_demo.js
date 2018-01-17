@@ -391,31 +391,18 @@ function createSchemaFromMappings(mappings) {
     title: "Validation schema",
     type: "object",
     additionalProperties: false,
-    properties: {
-      subitem: {
-        type: "object",
-        properties: {},
-      },
-      cache: {
-        type: "object",
-        properties: {},
-      },
-      origins: {
-        type: "object",
-        properties: {},
-      },
-    },
+    properties: {}
   };
 
   mappings.forEach(mapping => {
-    var [section, ...parts] = mapping.to.split(".");
-    if (!(section in schema.properties)) {
-      throw new Error("invalid section: " + section);
-    }
+    var parts = mapping.to.split(".");
 
-    var currentProperties = schema.properties[section];
+    var currentProperties = schema;
     for (var i = 0; i < parts.length - 1; i++) {
-      currentProperties["properties"][parts[i]] = { type: "object", properties: {} };
+      if(!currentProperties["properties"][parts[i]]) {
+        currentProperties["properties"][parts[i]] = { type: "object", properties: {} };
+      }
+
       currentProperties = currentProperties["properties"][parts[i]];
     }
 
