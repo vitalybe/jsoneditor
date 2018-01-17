@@ -25,7 +25,7 @@
  *
  * @author  Jos de Jong, <wjosdejong@gmail.com>
  * @version 5.13.1
- * @date    2018-01-15
+ * @date    2018-01-17
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -5705,7 +5705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // show checkbox when the value is a boolean
-	    if (type === "boolean" && this.editable.value) {
+	    if (type === "boolean" && this.editable.value && !this.enum) {
 	      if (!this.dom.checkbox) {
 	        this.dom.checkbox = document.createElement("input");
 	        this.dom.checkbox.type = "checkbox";
@@ -7666,20 +7666,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	};
 
-	// Node.prototype._createEmptyObjectFromSchema = function(schemaObject) {
-	//   var result = {};
-	//   if (schemaObject.properties) {
-	//     Object.keys(schemaObject.properties).forEach(key => {
-	//       var property = schemaObject.properties[key];
-	//       if (property && property.type && property.type === "object") {
-	//         result[key] = this._createEmptyObjectFromSchema(schemaObject.properties[key]);
-	//       } else {
-	//         result[key] = null;
-	//       }
-	//     });
-	//   }
-	//   return result;
-	// };
+	Node.prototype._createEmptyObjectFromSchema = function(schemaObject) {
+	  var result = {};
+	  if (schemaObject.properties) {
+	    Object.keys(schemaObject.properties).forEach(function(key) {
+	      var property = schemaObject.properties[key];
+	      if (property && property.type && property.type === "object") {
+	        result[key] = this._createEmptyObjectFromSchema(schemaObject.properties[key]);
+	      } else {
+	        result[key] = null;
+	      }
+	    }.bind(this));
+	  }
+	  return result;
+	};
 
 	Node.prototype.getContextMenuItems = function(node, includeRemove) {
 	  var items = [];
