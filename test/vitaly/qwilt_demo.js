@@ -169,7 +169,7 @@ const mappings = [
   {
     from: "shouldStoreOrigServerResponseHeadersInMeta",
     to: "cache.shouldStoreOrigServerResponseHeadersInMeta",
-    schema: { oneOf: [{ type: "string", enum: ["yes", "no"] }, { type: "null" }] },
+    schema: { oneOf: [{ type: "boolean", enum: [true, false] }, { type: "null" }] },
     default: null,
     discardIf: isNull,
   },
