@@ -15222,7 +15222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        result[key] = null;
 	      }
-	    });
+	    }.bind(this));
 	  }
 	  return result;
 	};

@@ -3196,7 +3196,7 @@ Node.prototype._createEmptyObjectFromSchema = function(schemaObject) {
       } else {
         result[key] = null;
       }
-    });
+    }.bind(this));
   }
   return result;
 };
